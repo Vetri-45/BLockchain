@@ -1,0 +1,89 @@
+.page { min-height: calc(100vh - 64px); position: relative; }
+.content { max-width: 720px; margin: 0 auto; padding: 44px 28px; position: relative; z-index: 1; }
+.back {
+  background: transparent; border: none; color: var(--text-muted);
+  font-family: var(--font-display); font-size: 10px; letter-spacing: 0.1em;
+  cursor: pointer; margin-bottom: 28px; display: block; transition: color 0.2s;
+}
+.back:hover { color: var(--star-cyan); }
+.header { margin-bottom: 32px; }
+.title {
+  font-family: var(--font-display); font-size: 22px; font-weight: 900;
+  letter-spacing: 0.08em; color: var(--text-primary); margin: 10px 0 8px;
+}
+.sub { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+.grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.empty { color: var(--text-muted); font-size: 13px; padding: 40px 0; text-align: center; }
+
+.candidateCard {
+  display: flex; align-items: center; gap: 16px;
+  background: linear-gradient(135deg, rgba(10,22,40,0.95), rgba(4,10,24,0.95));
+  border: 1px solid var(--space-border);
+  border-radius: var(--radius-lg); padding: 18px 22px;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  animation: fadeUp 0.45s ease both;
+}
+.candidateCard:hover {
+  border-color: rgba(0,150,255,0.3);
+  transform: translateX(6px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.selected {
+  border-color: var(--star-cyan) !important;
+  background: rgba(0,100,200,0.06) !important;
+  box-shadow: 0 0 24px rgba(0,170,255,0.15), inset 0 0 30px rgba(0,100,200,0.04) !important;
+}
+
+.cardGlowLine {
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,200,255,0.2), transparent);
+}
+.selected .cardGlowLine {
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.6), transparent);
+}
+
+.candidateAvatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, #003388, #a855f7);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 20px; font-weight: 900;
+  color: #fff; border: 1px solid rgba(100,150,255,0.3);
+  box-shadow: 0 0 16px rgba(0,100,200,0.3); flex-shrink: 0;
+}
+.selected .candidateAvatar { border-color: var(--star-cyan); box-shadow: 0 0 20px rgba(0,170,255,0.4); }
+
+.candidateInfo { flex: 1; }
+.candidateName {
+  font-family: var(--font-display); font-size: 14px; font-weight: 700;
+  color: var(--text-primary); letter-spacing: 0.05em;
+}
+.candidateParty { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+
+.radioOuter {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--space-border-glow);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: border-color 0.2s;
+}
+.selected .radioOuter { border-color: var(--star-cyan); }
+.radioInner {
+  width: 10px; height: 10px; background: var(--star-cyan);
+  border-radius: 50%; box-shadow: 0 0 10px rgba(0,212,255,0.6);
+}
+
+.actions { display: flex; justify-content: flex-end; }
+
+/* Confirm modal */
+.confirmContent {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 16px; text-align: center;
+}
+.confirmIcon { font-size: 44px; animation: float 2s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.confirmText { font-size: 14px; color: var(--text-secondary); line-height: 1.7; font-family: var(--font-body); }
+.confirmText strong { color: var(--text-primary); font-family: var(--font-display); }
+.confirmWarn { font-size: 12px; color: var(--warning); font-family: var(--font-body); }
+.confirmActions { display: flex; gap: 12px; margin-top: 8px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }

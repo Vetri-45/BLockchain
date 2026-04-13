@@ -1,0 +1,139 @@
+.navbar {
+  display: flex; align-items: center;
+  padding: 0 32px; height: 64px;
+  background: rgba(2,8,24,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--space-border);
+  position: sticky; top: 0; z-index: 50;
+  gap: 32px;
+}
+
+.cosmicLine {
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(0,100,200,0.5) 20%,
+    rgba(0,212,255,0.8) 50%,
+    rgba(168,85,247,0.5) 80%,
+    transparent 100%);
+}
+
+
+.brand {
+  display: flex; align-items: center; gap: 14px;
+  text-decoration: none; flex-shrink: 0;
+}
+
+.brandOrbit {
+  position: relative; width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.brandPlanet {
+  width: 14px; height: 14px;
+  background: radial-gradient(circle at 35% 35%, #4fc3ff, #0066cc);
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(0,150,255,0.6), 0 0 24px rgba(0,100,200,0.3);
+  animation: float 3s ease-in-out infinite;
+}
+
+.brandRing {
+  position: absolute; inset: 4px;
+  border: 1.5px solid rgba(0,212,255,0.4);
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 4s linear infinite;
+}
+
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.brandText { display: flex; flex-direction: column; gap: 1px; }
+.brandName {
+  font-family: var(--font-display); font-size: 14px; font-weight: 900;
+  color: var(--text-primary); letter-spacing: 0.15em;
+  background: linear-gradient(90deg, #e8f4ff, #64b4ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.brandSub {
+  font-family: var(--font-display); font-size: 8px;
+  color: var(--text-muted); letter-spacing: 0.2em;
+}
+
+/* Links */
+.links { display: flex; align-items: center; gap: 4px; flex: 1; }
+
+.link {
+  padding: 7px 14px; border-radius: var(--radius-sm);
+  font-family: var(--font-display); font-size: 10px; font-weight: 700;
+  color: var(--text-muted); transition: all 0.2s;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1px solid transparent;
+}
+.link:hover {
+  color: var(--star-cyan);
+  background: rgba(0,212,255,0.06);
+  border-color: rgba(0,212,255,0.15);
+}
+.active {
+  color: var(--star-cyan) !important;
+  background: rgba(0,212,255,0.08) !important;
+  border-color: rgba(0,212,255,0.2) !important;
+  box-shadow: 0 0 12px rgba(0,170,255,0.1);
+}
+
+/* Right */
+.right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+
+.userInfo { display: flex; align-items: center; gap: 10px; }
+
+.userAvatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, #0066cc, #a855f7);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 13px; font-weight: 900;
+  color: #fff; border: 1px solid rgba(0,212,255,0.3);
+  box-shadow: 0 0 12px rgba(0,100,200,0.3);
+}
+
+.userDetails { display: flex; flex-direction: column; gap: 1px; }
+
+.username {
+  font-family: var(--font-display); font-size: 10px;
+  color: var(--text-secondary); letter-spacing: 0.08em;
+}
+
+.roleBadge {
+  font-family: var(--font-display); font-size: 8px; font-weight: 900;
+  color: #c084fc; letter-spacing: 0.15em;
+  background: rgba(168,85,247,0.12);
+  padding: 1px 6px; border-radius: 3px;
+  border: 1px solid rgba(168,85,247,0.3);
+}
+
+.logoutBtn {
+  background: transparent; border: 1px solid var(--space-border);
+  color: var(--text-muted); padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display); font-size: 10px;
+  font-weight: 700; letter-spacing: 0.1em;
+  cursor: pointer; transition: all 0.2s;
+}
+.logoutBtn:hover {
+  color: var(--danger); border-color: rgba(255,71,87,0.4);
+  background: rgba(255,71,87,0.06);
+}
+
+.loginBtn {
+  background: linear-gradient(135deg, #0066cc, #00aaff);
+  color: #fff; padding: 8px 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display); font-size: 11px; font-weight: 900;
+  letter-spacing: 0.12em; transition: all 0.25s;
+  border: 1px solid rgba(0,170,255,0.4);
+  box-shadow: 0 0 20px rgba(0,150,255,0.3);
+}
+.loginBtn:hover {
+  box-shadow: 0 0 35px rgba(0,170,255,0.5);
+  transform: translateY(-1px);
+}

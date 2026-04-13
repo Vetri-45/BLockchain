@@ -1,0 +1,113 @@
+.page {
+  min-height: 100vh; display: flex;
+  align-items: center; justify-content: center;
+  position: relative; padding: 24px;
+}
+
+.container {
+  width: 100%; max-width: 400px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 20px;
+  position: relative; z-index: 1;
+  animation: fadeUp 0.5s ease;
+}
+
+/* Signal animation */
+.signalIcon {
+  position: relative; width: 80px; height: 80px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.signalCore {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, #003388, #0066cc);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  border: 1px solid rgba(0,212,255,0.4);
+  box-shadow: 0 0 20px rgba(0,150,255,0.4);
+  position: relative; z-index: 2;
+}
+
+.signalRing {
+  position: absolute; inset: 6px;
+  border: 2px solid rgba(0,212,255,0.3);
+  border-radius: 50%;
+  border-top-color: var(--star-cyan);
+  animation: spin 2s linear infinite;
+}
+
+.signalRing2 {
+  position: absolute; inset: 0;
+  border: 1px solid rgba(168,85,247,0.2);
+  border-radius: 50%;
+  border-bottom-color: rgba(168,85,247,0.5);
+  animation: spin 3s linear infinite reverse;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.title {
+  font-family: var(--font-display); font-size: 18px; font-weight: 900;
+  letter-spacing: 0.15em; color: var(--text-primary); text-align: center;
+  background: linear-gradient(90deg, #fff, #64b4ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.sub {
+  text-align: center; font-size: 14px;
+  color: var(--text-secondary); line-height: 1.7;
+}
+
+.email { color: var(--star-cyan); font-weight: 600; font-family: var(--font-display); font-size: 12px; }
+
+/* OTP boxes */
+.otpRow { display: flex; gap: 10px; margin: 8px 0; }
+
+.otpBox {
+  width: 50px; height: 58px;
+  background: rgba(6,13,31,0.9);
+  border: 1px solid var(--space-border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: var(--font-display); font-size: 22px; font-weight: 900;
+  text-align: center; letter-spacing: 0.05em;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.otpBox:focus {
+  border-color: var(--star-cyan);
+  box-shadow: 0 0 0 3px rgba(0,212,255,0.1), 0 0 16px rgba(0,170,255,0.15);
+}
+.filled {
+  border-color: var(--star-cyan) !important;
+  color: var(--star-cyan) !important;
+  background: rgba(0,50,150,0.15) !important;
+  box-shadow: 0 0 12px rgba(0,170,255,0.15);
+}
+
+.resendRow { text-align: center; }
+
+.timer {
+  font-family: var(--font-display); font-size: 11px;
+  color: var(--text-muted); letter-spacing: 0.08em;
+}
+
+.resendBtn {
+  background: transparent; border: none;
+  color: var(--star-cyan);
+  font-family: var(--font-display); font-size: 11px;
+  font-weight: 700; letter-spacing: 0.1em;
+  cursor: pointer; transition: opacity 0.2s;
+}
+.resendBtn:hover { opacity: 0.75; }
+.resendBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.expiry {
+  font-family: var(--font-display); font-size: 10px;
+  color: var(--text-muted); letter-spacing: 0.08em;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

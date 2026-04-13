@@ -1,0 +1,265 @@
+.page {
+  min-height: 100vh; display: flex;
+  align-items: center; justify-content: center;
+  position: relative; padding: 24px;
+}
+
+.container {
+  width: 100%; max-width: 500px;
+  display: flex; flex-direction: column;
+  gap: 16px; position: relative; z-index: 1;
+  animation: fadeUp 0.45s ease;
+}
+
+/* Header */
+.header { text-align: center; }
+.title {
+  font-family: var(--font-display); font-size: 18px; font-weight: 900;
+  letter-spacing: 0.12em; color: var(--text-primary); margin-bottom: 8px;
+  background: linear-gradient(90deg, #fff, #64b4ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.sub { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+/* ── Security badge ── */
+.securityBadge {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(0,80,180,0.08);
+  border: 1px solid rgba(0,180,255,0.2);
+  border-radius: var(--radius); padding: 14px 16px;
+}
+.securityIcon { font-size: 22px; flex-shrink: 0; }
+.securityTitle {
+  font-family: var(--font-display); font-size: 10px; font-weight: 900;
+  letter-spacing: 0.12em; color: var(--star-cyan);
+}
+.securitySub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* Attempt pills */
+.attemptPills { display: flex; gap: 5px; margin-left: auto; flex-shrink: 0; }
+.attemptPill {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: rgba(16,212,142,0.3);
+  border: 1px solid rgba(16,212,142,0.5);
+  transition: all 0.3s;
+}
+.attemptFailed {
+  background: rgba(255,71,87,0.4) !important;
+  border-color: rgba(255,71,87,0.6) !important;
+  box-shadow: 0 0 6px rgba(255,71,87,0.3);
+}
+
+/* ── Lockout screen ── */
+.lockScreen {
+  background: rgba(255,71,87,0.06);
+  border: 1px solid rgba(255,71,87,0.25);
+  border-radius: var(--radius-xl);
+  padding: 48px 32px;
+  text-align: center;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 12px;
+  animation: fadeUp 0.3s ease;
+}
+.lockIcon { font-size: 48px; animation: shake 0.5s ease; }
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)}
+}
+.lockTitle {
+  font-family: var(--font-display); font-size: 18px; font-weight: 900;
+  letter-spacing: 0.15em; color: var(--danger);
+}
+.lockDesc { font-size: 13px; color: var(--text-secondary); }
+.lockTimer {
+  font-family: var(--font-display); font-size: 42px; font-weight: 900;
+  color: var(--danger); text-shadow: 0 0 20px rgba(255,71,87,0.4);
+  animation: pulse 1s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+.lockSub { font-family: var(--font-display); font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; }
+
+/* ── Status bar ── */
+.statusBar {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(0,212,255,0.06);
+  border: 1px solid rgba(0,212,255,0.15);
+  border-radius: var(--radius); padding: 10px 16px;
+  font-size: 12px; color: var(--star-cyan);
+  font-family: var(--font-display); letter-spacing: 0.05em;
+}
+.statusDot {
+  width: 8px; height: 8px; background: var(--star-cyan);
+  border-radius: 50%; animation: blink 1s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* ── Confidence bar ── */
+.confidenceBar {
+  background: rgba(6,13,31,0.9);
+  border: 1px solid var(--space-border);
+  border-radius: var(--radius); padding: 16px;
+  animation: fadeUp 0.3s ease;
+}
+.confidenceHeader {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 10px;
+}
+.confidenceLabel {
+  font-family: var(--font-display); font-size: 9px;
+  letter-spacing: 0.15em; color: var(--text-muted);
+}
+.confidenceValue {
+  font-family: var(--font-display); font-size: 18px;
+  font-weight: 900; transition: color 0.3s;
+}
+.confidenceTrack {
+  height: 8px; background: rgba(255,255,255,0.06);
+  border-radius: 100px; overflow: visible;
+  position: relative;
+}
+.confidenceFill {
+  height: 100%; border-radius: 100px;
+  transition: width 0.8s ease, background 0.3s;
+  box-shadow: 0 0 8px currentColor;
+}
+.thresholdMarker {
+  position: absolute; top: -4px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2px;
+}
+.thresholdLine {
+  width: 2px; height: 16px;
+  background: rgba(245,158,11,0.6);
+  border-radius: 1px;
+}
+.thresholdLabel {
+  font-family: var(--font-display); font-size: 8px;
+  color: var(--warning); letter-spacing: 0.08em;
+  white-space: nowrap; margin-top: 2px;
+}
+.confidenceHint {
+  font-size: 11px; color: var(--text-muted);
+  margin-top: 8px; font-family: var(--font-body);
+}
+
+/* ── Tabs ── */
+.tabs {
+  display: flex; background: var(--space-card);
+  border: 1px solid var(--space-border);
+  border-radius: var(--radius); padding: 4px; gap: 4px;
+}
+.tab {
+  flex: 1; background: transparent; border: none;
+  border-radius: var(--radius-sm); padding: 9px 12px;
+  font-family: var(--font-display); font-size: 11px;
+  font-weight: 700; letter-spacing: 0.08em;
+  color: var(--text-secondary); cursor: pointer; transition: all 0.2s;
+}
+.tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+.tabActive {
+  background: rgba(0,212,255,0.1) !important;
+  color: var(--star-cyan) !important;
+  border: 1px solid rgba(0,212,255,0.2);
+}
+
+/* ── Camera ── */
+.cameraWrap {
+  position: relative; width: 100%; aspect-ratio: 4/3;
+  background: var(--space-card);
+  border: 1px solid var(--space-border-glow);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.video {
+  width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);
+}
+.preview {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.successBadge {
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+  background: rgba(16,212,142,0.12);
+  border: 1px solid rgba(16,212,142,0.35);
+  color: var(--success);
+  font-family: var(--font-display); font-size: 11px; font-weight: 900;
+  padding: 5px 16px; border-radius: 100px;
+  letter-spacing: 0.12em; white-space: nowrap;
+}
+.cameraError {
+  width: 100%; height: 100%; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px; padding: 32px; text-align: center;
+  color: var(--text-muted); font-size: 13px;
+}
+.errorIcon { font-size: 36px; }
+
+/* Face guide */
+.faceGuide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.faceOval {
+  width: 190px; height: 240px;
+  border: 2.5px dashed rgba(0,212,255,0.55);
+  border-radius: 50%;
+  animation: pulseOval 2s ease-in-out infinite;
+}
+@keyframes pulseOval {
+  0%,100%{border-color:rgba(0,212,255,0.35)} 50%{border-color:rgba(0,212,255,0.9)}
+}
+.guideText {
+  margin-top: 14px; font-size: 11px;
+  color: rgba(0,212,255,0.85);
+  font-family: var(--font-display); font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: rgba(0,0,20,0.65); padding: 4px 14px; border-radius: 100px;
+}
+
+/* Live indicator */
+.liveIndicator {
+  position: absolute; top: 12px; left: 12px;
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(0,0,20,0.75);
+  border: 1px solid rgba(16,212,142,0.3);
+  border-radius: 100px; padding: 4px 10px;
+  font-family: var(--font-display); font-size: 10px;
+  font-weight: 900; letter-spacing: 0.12em; color: var(--success);
+}
+.liveDot {
+  width: 7px; height: 7px; background: var(--success);
+  border-radius: 50%; animation: blink 1.2s ease-in-out infinite;
+}
+
+/* Upload zone */
+.uploadZone {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px; cursor: pointer; padding: 32px; text-align: center;
+  transition: background 0.2s;
+}
+.uploadZone:hover { background: rgba(0,212,255,0.03); }
+.dragOver { background: rgba(0,212,255,0.08) !important; border-color: var(--star-cyan) !important; }
+.uploadIcon { font-size: 38px; }
+.uploadText { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.05em; }
+.uploadSub  { font-size: 11px; color: var(--text-muted); margin-top: -4px; }
+
+/* Tips */
+.tips { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.tip {
+  font-size: 11px; color: var(--text-muted);
+  background: var(--space-card);
+  border: 1px solid var(--space-border);
+  padding: 4px 10px; border-radius: 100px;
+  font-family: var(--font-body);
+}
+
+/* Actions */
+.actions { display: flex; gap: 12px; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

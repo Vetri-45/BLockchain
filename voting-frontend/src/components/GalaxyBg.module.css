@@ -1,0 +1,66 @@
+.galaxyBg {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  overflow: hidden;
+}
+
+
+.nebula {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); animation: pulse-nebula 8s ease-in-out infinite;
+}
+.nebula1 {
+  width: 600px; height: 400px;
+  top: -100px; left: -150px;
+  background: radial-gradient(ellipse, rgba(0,80,200,0.12) 0%, transparent 70%);
+  animation-delay: 0s;
+}
+.nebula2 {
+  width: 500px; height: 500px;
+  bottom: -100px; right: -100px;
+  background: radial-gradient(ellipse, rgba(168,85,247,0.08) 0%, transparent 70%);
+  animation-delay: 3s;
+}
+.nebula3 {
+  width: 400px; height: 300px;
+  top: 40%; left: 30%;
+  background: radial-gradient(ellipse, rgba(6,182,212,0.06) 0%, transparent 70%);
+  animation-delay: 6s;
+}
+
+@keyframes pulse-nebula {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.08); }
+}
+
+
+.shootingStar {
+  position: absolute;
+  width: 100px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(100,200,255,0.8), transparent);
+  animation: shoot 6s linear infinite;
+  opacity: 0;
+}
+.ss1 { top: 15%; left: 10%; transform: rotate(30deg); animation-delay: 1s; }
+.ss2 { top: 45%; left: 60%; transform: rotate(25deg); animation-delay: 4s; }
+.ss3 { top: 70%; left: 30%; transform: rotate(20deg); animation-delay: 7s; }
+
+@keyframes shoot {
+  0%   { opacity: 0; transform: translateX(-50px) rotate(30deg); }
+  10%  { opacity: 1; }
+  40%  { opacity: 0; transform: translateX(250px) rotate(30deg); }
+  100% { opacity: 0; transform: translateX(250px) rotate(30deg); }
+}
+
+
+.twinkleStar {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50%       { opacity: 1;   transform: scale(1.5); box-shadow: 0 0 4px rgba(200,230,255,0.8); }
+}

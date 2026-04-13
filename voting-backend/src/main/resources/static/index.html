@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voting System</title>
+    <style>
+        body {
+          font-family: Arial;
+          text-align: center;
+          background: #f4f4f4;
+        }
+        .box {
+          background: white;
+          padding: 20px;
+          margin: 20px auto;
+          width: 300px;
+          border-radius: 10px;
+          box-shadow: 0 0 10px gray;
+        }
+        input, button {
+          margin: 5px;
+          padding: 10px;
+          width: 90%;
+        }
+        button {
+          background: #007bff;
+          color: white;
+          border: none;
+          cursor: pointer;
+        }
+        button:hover {
+          background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🗳️ Voting System</h1>
+
+<div class="box">
+    <h3>🔐 Token</h3>
+    <input id="token" placeholder="Paste JWT Token">
+</div>
+
+<div class="box">
+    <h3>🗳️ Cast Vote</h3>
+    <input id="electionId" placeholder="Election ID">
+    <input id="candidateId" placeholder="Candidate ID">
+    <button onclick="castVote()">Vote</button>
+</div>
+
+<div class="box">
+    <h3>🔗 Verify Blockchain</h3>
+    <button onclick="verify()">Verify</button>
+</div>
+
+<div class="box">
+    <h3>🏁 End Election</h3>
+    <input id="endElectionId" placeholder="Election ID">
+    <button onclick="endElection()">End</button>
+</div>
+
+<div class="box">
+    <h3> Get Result</h3>
+    <input id="resultElectionId" placeholder="Election ID">
+    <button onclick="getResult()">Get Result</button>
+</div>
+
+<h2 id="output"></h2>
+
+<script>
+    const baseUrl = "http://localhost:8080";
+
+    async function castVote() {
+      const token = document.getElementById("token").value;
+
+      const res = await fetch(baseUrl + "/api/votes/cast", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+          electionId: document.getElementById("electionId").value,
+          candidateId: document.getElementById("candidateId").value
+        })
+      });
+
+      const text = await res.text();
+      document.getElementById("output").innerText = text;
+    }
+
+    async function verify() {
+      const res = await fetch(baseUrl + "/api/votes/verify");
+      const text = await res.text();
+      document.getElementById("output").innerText = text;
+    }
+
+    async function endElection() {
+      const id = document.getElementById("endElectionId").value;
+
+      const res =await fetch(baseUrl + "/api/elections/end/" + id, {
+        method: "PUT"
+      });
+
+      const text=await res.text();
+      document.getElementById("output").innerText = text;
+    }
+
+    async function getResult() {
+      const id = document.getElementById("resultElectionId").value;
+
+      const res = await fetch(baseUrl + "/api/votes/result/" + id);
+      const data = await res.json();
+
+      document.getElementById("output").innerText =
+        " Winner: " + data.winner + " | Votes: " + data.votes;
+    }
+</script>
+
+</body>
+</html>
