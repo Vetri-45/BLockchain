@@ -19,15 +19,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // ✅ NEW: inject email validation service
     @Autowired
     private EmailValidationService emailValidationService;
 
-    // ✅ UPDATED: validates email before saving user
     @PostMapping("/user")
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {
-            // Validate email format + MX record
+
             emailValidationService.validate(user.getEmail());
 
             User created = userService.createUser(user);
