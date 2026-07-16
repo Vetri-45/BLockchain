@@ -21,18 +21,16 @@ public class UserController {
 
     @Autowired
     private EmailValidationService emailValidationService;
+    @GetMapping("/test")
+    public String test() {
+        System.out.println("TEST API HIT");
+        return "Working";
+    }
 
     @PostMapping("/user")
     public ResponseEntity<?> createUser(@RequestBody User user) {
-        try {
-
-            emailValidationService.validate(user.getEmail());
-
-            User created = userService.createUser(user);
-            return ResponseEntity.ok(created);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.status(403)
+                .body("Direct registration not allowed. Use OTP verification.");
     }
 
     @GetMapping("/user")

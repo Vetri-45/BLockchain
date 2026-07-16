@@ -34,6 +34,10 @@ public class UserService  {
 private BCryptPasswordEncoder passwordEncoder;
 
 public User createUser(User user){
+
+    System.out.println("========== SAVING USER ==========");
+
+
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     if (user.getRole()==null) {
             user.setRole("ROLE_USER");
@@ -61,6 +65,14 @@ public User createUser(User user){
         userRepository.deleteAll();
     }
 
+    public boolean existsByUsername(String username) {
+        return userRepository.findByUsername(username).isPresent();
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
    public String verify(User user) {
     Authentication authentication=authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
@@ -80,6 +92,7 @@ public User createUser(User user){
     }
 
 }
+
 
 }
 

@@ -21,16 +21,13 @@ public class User {
 
     private String role;
 
-    // Stores base64 face image for display/reference
+
     @Column(columnDefinition = "LONGTEXT")
     private String faceImage;
 
-    // Stores face descriptor as comma-separated float values
-    // e.g. "0.1234,0.5678,..." (128 values from face-api.js)
     @Column(columnDefinition = "TEXT")
     private String faceDescriptor;
 
-    // ── Getters & Setters ──────────────────────────────────────
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
@@ -51,4 +48,12 @@ public class User {
 
     public String getFaceDescriptor() { return faceDescriptor; }
     public void setFaceDescriptor(String faceDescriptor) { this.faceDescriptor = faceDescriptor; }
+
+    // ✅ Add this field to your User.java
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean isVerified = false;
+
+    // getter and setter
+    public boolean isVerified() { return isVerified; }
+    public void setVerified(boolean verified) { isVerified = verified; }
 }

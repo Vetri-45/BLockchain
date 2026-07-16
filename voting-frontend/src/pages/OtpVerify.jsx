@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { Button } from '../components/UI';
 import GalaxyBg from '../components/GalaxyBg';
 import toast from 'react-hot-toast';
@@ -9,7 +9,13 @@ import styles from './OtpVerify.module.css';
 export default function OtpVerify() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { email, username, token, mode = 'register' } = location.state || {};
+  const {
+  email,
+  username,
+  password,
+  token,
+  mode = 'register'
+} = location.state || {};
 
   const [digits, setDigits]       = useState(['', '', '', '', '', '']);
   const [loading, setLoading]     = useState(false);
@@ -41,24 +47,67 @@ export default function OtpVerify() {
   };
 
   const handleVerify = async () => {
-    const code = digits.join('');
-    if (code.length < 6) { toast.error('Enter all 6 digits'); return; }
-    setLoading(true);
-    try {
-      await axios.post('/api/otp/verify', { email, code });
-      toast.success('OTP verified! ✅');
-      navigate('/face-capture', { state: { email, username, token, mode } });
-    } catch (err) {
-      toast.error(err.response?.data || 'Invalid OTP. Try again.');
-      setDigits(['', '', '', '', '', '']);
-      inputRefs.current[0]?.focus();
-    } finally { setLoading(false); }
-  };
+  const code = digits.join('');
+
+  if (code.length !== 6) {
+    toast.error("Enter all 6 digits");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+
+    // Verify OTP first
+    await api.post("/otp/verify", {
+      email,
+      code
+    });
+
+    // If registration, create user only AFTER OTP success
+    if (mode === "register") {
+
+      await api.post("/user", {
+        username,
+        email,
+        password
+      });
+
+      toast.success("Registration Successful!");
+      navigate("/login");
+    }
+
+    // Login flow
+    else {
+
+      toast.success("OTP Verified!");
+      navigate("/face-capture", {
+        state: {
+          email,
+          username,
+          token,
+          mode
+        }
+      });
+
+    }
+
+  } catch (err) {
+
+    toast.error(err.response?.data || "Invalid OTP");
+
+    setDigits(['','','','','','']);
+    inputRefs.current[0]?.focus();
+
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleResend = async () => {
     setResending(true);
     try {
-      await axios.post('/api/otp/send', { email });
+      await api.post('/otp/send', { email });
       toast.success('New OTP sent!');
       setCountdown(60);
       setDigits(['', '', '', '', '', '']);

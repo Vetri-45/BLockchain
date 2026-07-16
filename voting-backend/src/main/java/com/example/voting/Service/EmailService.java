@@ -19,6 +19,7 @@ public class EmailService {
 
     public void sendOtp(String toEmail, String otp) {
         try {
+            System.out.println("Sending OTP email to: " + toEmail);
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
@@ -50,8 +51,12 @@ public class EmailService {
             helper.setText(htmlContent, true);
             mailSender.send(message);
 
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to send OTP email: " + e.getMessage());
+        } catch(Exception e) {
+            e.printStackTrace();
+
+            throw new RuntimeException(
+                    "Failed to send OTP email: " + e.getMessage()
+            );
         }
     }
 }

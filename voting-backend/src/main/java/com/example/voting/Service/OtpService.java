@@ -27,17 +27,18 @@ public class OtpService {
     // Generate and send OTP to email
     @Transactional
     public void generateAndSend(String email) {
-        // Delete any existing OTPs for this email
+
         otpRepository.deleteAllByEmail(email);
 
-        // Generate 6-digit OTP
         String code = String.format("%06d", random.nextInt(1_000_000));
 
-        // Save to DB with expiry
-        Otp otp = new Otp(email, code, LocalDateTime.now().plusMinutes(expiryMinutes));
+        Otp otp = new Otp(email, code,
+                LocalDateTime.now().plusMinutes(expiryMinutes));
+
+        // Save OTP first
         otpRepository.save(otp);
 
-        // Send email
+        // Then send email
         emailService.sendOtp(email, code);
     }
 

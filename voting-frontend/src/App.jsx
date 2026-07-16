@@ -53,7 +53,8 @@ export default function App() {
               background: 'rgba(6,13,31,0.95)',
               color: '#e8f4ff',
               border: '1px solid rgba(0,212,255,0.2)',
-              fontFamily: "'Rajdhani', sans-serif",
+              // ✅ NEW
+              fontFamily: "'Space Grotesk', sans-serif",
               fontSize: '14px',
               backdropFilter: 'blur(12px)',
               boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(0,100,200,0.1)',

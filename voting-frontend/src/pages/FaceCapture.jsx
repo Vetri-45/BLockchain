@@ -80,7 +80,7 @@ export default function FaceCapture() {
     load();
   }, []);
 
-  // ── Lockout countdown timer ───────────────────────────────────
+ 
   useEffect(() => {
     if (lockTimer <= 0) return;
     const t = setTimeout(() => {
@@ -150,7 +150,7 @@ export default function FaceCapture() {
     } catch { return null; }
   };
 
-  // ── Capture from webcam ───────────────────────────────────────
+  
   const capturePhoto = async () => {
     if (!modelsLoaded || locked) return;
     const video  = videoRef.current;
@@ -180,7 +180,7 @@ export default function FaceCapture() {
     toast.success('Face scanned successfully ✅');
   };
 
-  // ── Retake ────────────────────────────────────────────────────
+
   const retake = () => {
     if (locked) return;
     setCaptured(null);
@@ -245,16 +245,15 @@ export default function FaceCapture() {
 
     try {
       if (mode === 'register') {
-        // Register — save descriptor to DB
-        await axios.post('/api/face/register', {
-          username,
-          descriptor: descriptorStr,
-          image: base64
-        });
-        toast.success('Face registered! You can now login. ✅');
-        navigate('/login');
-
-      } else {
+  // Send descriptor as array (not string) for backend comparison
+  await axios.post('/api/face/register', {
+    username,
+    descriptor: Array.from(descriptor), // ✅ array not string
+    image: base64
+  });
+  toast.success('Face registered! You can now login. ✅');
+  navigate('/login');
+} else {
         // Login — verify descriptor against stored one
         setStatusMsg('Verifying identity...');
 
@@ -268,55 +267,80 @@ export default function FaceCapture() {
         setLastConfidence(conf);
 
         if (res.data?.verified && conf >= 50) {
-          // ✅ SUCCESS
-          toast.success(`Identity verified! Confidence: ${conf}% ✅`);
-          loginUser(token);
-          navigate('/elections');
-        }
+  // ✅ Debug — check token exists
+  console.log('Token from state:', token);
+
+  if (!token) {
+    toast.error('Session expired. Please login again.');
+    navigate('/login');
+    return;
+  }
+
+  // ✅ Save token properly
+  loginUser(token);
+
+  // ✅ Verify it saved
+  console.log('Saved token:', localStorage.getItem('token'));
+
+  toast.success(`Identity verified! Confidence: ${conf}% ✅`);
+  navigate('/elections');
+}
       }
 
-    } catch (err) {
-      setStatusMsg('');
-      const msg = err.response?.data;
+    }  catch (err) {
+  setStatusMsg('');
+  const msg = err.response?.data;
+  const status = err.response?.status;
 
-      // Parse confidence from error message if available
-      const confMatch = typeof msg === 'string' && msg.match(/Confidence: ([\d.]+)%/);
-      const failedConf = confMatch ? parseFloat(confMatch[1]) : null;
-      setLastConfidence(failedConf);
-
-      // Count failed attempt
-      const newAttempts = attempts + 1;
-      setAttempts(newAttempts);
-
-      if (newAttempts >= MAX_ATTEMPTS) {
-        // Lock out after 3 failed attempts
-        setLocked(true);
-        setLockTimer(30); // 30 second lockout
-        toast.error(`❌ Too many failed attempts. Locked for 30 seconds.`);
-      } else {
-        const remaining = MAX_ATTEMPTS - newAttempts;
-        if (typeof msg === 'string') {
-          toast.error(`${msg} (${remaining} attempt${remaining > 1 ? 's' : ''} remaining)`);
-        } else {
-          toast.error(`Face verification failed. ${remaining} attempt${remaining > 1 ? 's' : ''} remaining.`);
-        }
-      }
-
-      // Reset for retry
-      setCaptured(null);
-      setDescriptor(null);
-      if (activeTab === 'camera' && !locked) setTimeout(() => startCamera(), 150);
-    } finally {
-      setLoading(false);
-      setStatusMsg('');
+  // ─── REGISTER ERROR HANDLING ───────────────────────
+  if (mode === 'register') {
+    if (status === 409) {
+      // Duplicate face detected
+      toast.error('❌ This face is already registered with another account!');
+    } else if (status === 400) {
+      toast.error('No face detected in image. Please retake.');
+    } else {
+      toast.error(typeof msg === 'string' ? msg : 'Face registration failed. Try again.');
     }
+    // Reset for retake — no attempt locking for register
+    setCaptured(null);
+    setDescriptor(null);
+    if (activeTab === 'camera') setTimeout(() => startCamera(), 150);
+    return;
+  }
+
+  // ─── LOGIN ERROR HANDLING ───────────────────────────
+  const confMatch = typeof msg === 'string' && msg.match(/Confidence: ([\d.]+)%/);
+  const failedConf = confMatch ? parseFloat(confMatch[1]) : null;
+  setLastConfidence(failedConf);
+
+  const newAttempts = attempts + 1;
+  setAttempts(newAttempts);
+
+  if (newAttempts >= MAX_ATTEMPTS) {
+    setLocked(true);
+    setLockTimer(30);
+    toast.error('❌ Too many failed attempts. Locked for 30 seconds.');
+  } else {
+    const remaining = MAX_ATTEMPTS - newAttempts;
+    if (typeof msg === 'string') {
+      toast.error(`${msg} (${remaining} attempt${remaining > 1 ? 's' : ''} remaining)`);
+    } else {
+      toast.error(`Face verification failed. ${remaining} attempt${remaining > 1 ? 's' : ''} remaining.`);
+    }
+  }
+
+  setCaptured(null);
+  setDescriptor(null);
+  if (activeTab === 'camera' && !locked) setTimeout(() => startCamera(), 150);
+}
   };
 
-  // ── Confidence meter color ────────────────────────────────────
+
   const getConfidenceColor = (conf) => {
     if (conf >= 75) return '#10d48e';  // green — high confidence
-    if (conf >= 50) return '#f59e0b';  // amber — borderline
-    return '#ff4757';                  // red — below threshold
+    if (conf >= 50) return '#f59e0b'; 
+    return '#ff4757';                 
   };
 
   return (

@@ -37,20 +37,20 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/login").permitAll()
-                .requestMatchers("/api/user").permitAll()
-                .requestMatchers("/api/otp/**").permitAll()
-                .requestMatchers("/api/face/**").permitAll()
-                .requestMatchers("/api/elections/**").permitAll()
-                .requestMatchers("/api/candidates/**").permitAll()
-                .requestMatchers("/api/start/**").permitAll()
-                .requestMatchers("/api/end/**").permitAll()
-                .requestMatchers("/api/all").permitAll()
-
-
-                .anyRequest().authenticated()
-            )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/api/user").permitAll()
+                        .requestMatchers("/api/test").permitAll()
+                        .requestMatchers("/api/admin/**").permitAll()  // ✅ ADD THIS
+                        .requestMatchers("/api/otp/**").permitAll()
+                        .requestMatchers("/api/face/**").permitAll()
+                        .requestMatchers("/api/elections/**").permitAll()
+                        .requestMatchers("/api/candidates/**").permitAll()
+                        .requestMatchers("/api/start/**").permitAll()
+                        .requestMatchers("/api/end/**").permitAll()
+                        .requestMatchers("/api/all").permitAll()
+                        .anyRequest().authenticated()
+                )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

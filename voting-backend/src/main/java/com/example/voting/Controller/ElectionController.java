@@ -11,7 +11,7 @@ import com.example.voting.Service.ElectionService;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/admin")
 public class ElectionController {
     private final ElectionService electionService;
 
@@ -61,13 +61,13 @@ public class ElectionController {
     }
     @PutMapping("/end/{id}")
     public String endElection(@PathVariable Long id) {
-        Election election = electionRepository.findById(id).get();
+        Election election=electionRepository.findById(id).get();
         election.setStatus("COMPLETED");
         electionRepository.save(election);
         return "Election ended";
     }
     @GetMapping("/all")
-    public List<Election> getAll() {
+    public List<Election>getAll() {
         return electionRepository.findAll();
     }
 
