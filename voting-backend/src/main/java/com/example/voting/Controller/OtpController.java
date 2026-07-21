@@ -80,21 +80,44 @@ public class OtpController {
         }
 
         try {
-            // Verify OTP first
+            // ✅ Only verify OTP — do NOT save user here
             otpService.verify(email, code);
 
-            // ✅ OTP verified — now check if pending user exists
-            User pending = pendingUsers.get(email);
-            if (pending != null) {
-                // Save user to DB ONLY after OTP verified
-                userService.createUser(pending);
-                pendingUsers.remove(email); // clean up memory
-                System.out.println("✅ User saved to DB after OTP: " + email);
-            }
+            // ✅ Keep pending user in memory for face capture step
+            // User will be saved AFTER face is registered
+            System.out.println("✅ OTP verified for: " + email);
 
             return ResponseEntity.ok("OTP verified successfully");
 
         } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // ✅ NEW endpoint — called by FaceCapture after face registered
+    @PostMapping("/complete-registration")
+    public ResponseEntity<?> completeRegistration(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+
+        if (email == null) {
+            return ResponseEntity.badRequest().body("Email is required");
+        }
+
+        try {
+            User pending = pendingUsers.get(email);
+            if (pending == null) {
+                return ResponseEntity.badRequest()
+                        .body("Session expired. Please register again.");
+            }
+
+            // ✅ Save user to DB now
+            userService.createUser(pending);
+            pendingUsers.remove(email);
+            System.out.println("✅ User saved to DB after face capture: " + email);
+
+            return ResponseEntity.ok("Registration complete");
+
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
