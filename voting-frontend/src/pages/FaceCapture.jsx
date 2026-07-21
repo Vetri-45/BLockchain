@@ -245,13 +245,17 @@ export default function FaceCapture() {
 
     try {
       if (mode === 'register') {
-  // Send descriptor as array (not string) for backend comparison
+  // ✅ Step 1: Save user to DB first
+  await axios.post('/api/otp/complete-registration', { email });
+
+  // ✅ Step 2: Register face descriptor
   await axios.post('/api/face/register', {
     username,
-    descriptor: Array.from(descriptor), // ✅ array not string
+    descriptor: Array.from(descriptor),
     image: base64
   });
-  toast.success('Face registered! You can now login. ✅');
+
+  toast.success('Registration complete! You can now login. ✅');
   navigate('/login');
 } else {
         // Login — verify descriptor against stored one

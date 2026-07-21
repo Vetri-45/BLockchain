@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
+import CyberCursor from './components/CyberCursor';
 
 import Login           from './pages/Login';
 import Register        from './pages/Register';
@@ -12,7 +13,7 @@ import Elections       from './pages/Elections';
 import Vote            from './pages/Vote';
 import Results         from './pages/Results';
 import Blockchain      from './pages/Blockchain';
-import About           from './pages/About';           // ✅ NEW
+import About           from './pages/About';
 import AdminElections  from './pages/admin/AdminElections';
 import AdminCandidates from './pages/admin/AdminCandidates';
 import AdminUsers      from './pages/admin/AdminUsers';
@@ -21,6 +22,10 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+
+        {/* ── Global cursor — sits above everything ── */}
+        <CyberCursor />
+
         <Navbar />
         <Routes>
           {/* Public */}
@@ -28,7 +33,7 @@ export default function App() {
           <Route path="/register"     element={<Register />} />
           <Route path="/otp-verify"   element={<OtpVerify />} />
           <Route path="/face-capture" element={<FaceCapture />} />
-          <Route path="/about"        element={<About />} />  {/* ✅ NEW — public */}
+          <Route path="/about"        element={<About />} />
 
           {/* Protected — Voter */}
           <Route path="/elections"   element={<ProtectedRoute><Elections /></ProtectedRoute>} />
@@ -50,14 +55,14 @@ export default function App() {
           position="bottom-right"
           toastOptions={{
             style: {
-              background: 'rgba(6,13,31,0.95)',
-              color: '#e8f4ff',
-              border: '1px solid rgba(0,212,255,0.2)',
-              // ✅ NEW
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontSize: '14px',
+              background    : 'rgba(6,13,31,0.95)',
+              color         : '#e8f4ff',
+              border        : '1px solid rgba(0,212,255,0.2)',
+              fontFamily    : "'Rajdhani', sans-serif",
+              fontSize      : '14px',
+              fontWeight    : '500',
               backdropFilter: 'blur(12px)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(0,100,200,0.1)',
+              boxShadow     : '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(0,100,200,0.1)',
             },
             success: { iconTheme: { primary: '#10d48e', secondary: 'rgba(6,13,31,0.95)' } },
             error:   { iconTheme: { primary: '#ff4757', secondary: 'rgba(6,13,31,0.95)' } },

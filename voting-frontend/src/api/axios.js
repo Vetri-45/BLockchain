@@ -1,8 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
-  headers: { 'Content-Type': 'application/json' },
+  baseURL: '/api',  // ✅ relative URL → goes through Vite proxy
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 api.interceptors.request.use((config) => {

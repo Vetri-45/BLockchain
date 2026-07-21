@@ -46,7 +46,7 @@ export default function OtpVerify() {
     if (pasted.length === 6) { setDigits(pasted.split('')); inputRefs.current[5]?.focus(); }
   };
 
-  const handleVerify = async () => {
+ const handleVerify = async () => {
   const code = digits.join('');
 
   if (code.length !== 6) {
@@ -57,48 +57,30 @@ export default function OtpVerify() {
   setLoading(true);
 
   try {
+    await api.post("/otp/verify", { email, code });
 
-    // Verify OTP first
-    await api.post("/otp/verify", {
-      email,
-      code
-    });
-
-    // If registration, create user only AFTER OTP success
     if (mode === "register") {
-
-      await api.post("/user", {
-        username,
-        email,
-        password
-      });
-
-      toast.success("Registration Successful!");
-      navigate("/login");
-    }
-
-    // Login flow
-    else {
-
-      toast.success("OTP Verified!");
+      // ✅ Go to face capture — NOT login
+      toast.success("OTP Verified! Now register your face.");
       navigate("/face-capture", {
         state: {
           email,
           username,
-          token,
-          mode
+          password, // ✅ pass password so backend can save user
+          mode: "register"
         }
       });
-
+    } else {
+      toast.success("OTP Verified!");
+      navigate("/face-capture", {
+        state: { email, username, token, mode }
+      });
     }
 
   } catch (err) {
-
     toast.error(err.response?.data || "Invalid OTP");
-
     setDigits(['','','','','','']);
     inputRefs.current[0]?.focus();
-
   } finally {
     setLoading(false);
   }
