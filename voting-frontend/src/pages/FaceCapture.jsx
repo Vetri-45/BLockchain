@@ -1,12 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { Button } from '../components/UI';
 import { useAuth } from '../context/AuthContext';
 import GalaxyBg from '../components/GalaxyBg';
 import toast from 'react-hot-toast';
 import styles from './FaceCapture.module.css';
-
 const MODEL_URL    = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model';
 const MAX_ATTEMPTS = 3; // max failed attempts before lockout
 
@@ -245,23 +244,23 @@ export default function FaceCapture() {
 
     try {
       if (mode === 'register') {
-  // ✅ Step 1: Save user to DB first
-  await axios.post('/api/otp/complete-registration', { email });
+        // ✅ Step 1: Save user to DB first
+        await api.post('/otp/complete-registration', { email });
 
-  // ✅ Step 2: Register face descriptor
-  await axios.post('/api/face/register', {
-    username,
-    descriptor: Array.from(descriptor),
-    image: base64
-  });
+        // ✅ Step 2: Register face descriptor
+        await api.post('/face/register', {
+          username,
+          descriptor: Array.from(descriptor),
+          image: base64
+        });
 
-  toast.success('Registration complete! You can now login. ✅');
-  navigate('/login');
-} else {
+        toast.success('Registration complete! You can now login. ✅');
+        navigate('/login');
+      } else {
         // Login — verify descriptor against stored one
         setStatusMsg('Verifying identity...');
 
-        const res = await axios.post('/api/face/verify', {
+        const res = await api.post('/face/verify', {
           username,
           descriptor: descriptorStr
         });
@@ -271,73 +270,73 @@ export default function FaceCapture() {
         setLastConfidence(conf);
 
         if (res.data?.verified && conf >= 50) {
-  // ✅ Debug — check token exists
-  console.log('Token from state:', token);
+          // ✅ Debug — check token exists
+          console.log('Token from state:', token);
 
-  if (!token) {
-    toast.error('Session expired. Please login again.');
-    navigate('/login');
-    return;
-  }
+          if (!token) {
+            toast.error('Session expired. Please login again.');
+            navigate('/login');
+            return;
+          }
 
-  // ✅ Save token properly
-  loginUser(token);
+          // ✅ Save token properly
+          loginUser(token);
 
-  // ✅ Verify it saved
-  console.log('Saved token:', localStorage.getItem('token'));
+          // ✅ Verify it saved
+          console.log('Saved token:', localStorage.getItem('token'));
 
-  toast.success(`Identity verified! Confidence: ${conf}% ✅`);
-  navigate('/elections');
-}
+          toast.success(`Identity verified! Confidence: ${conf}% ✅`);
+          navigate('/elections');
+        }
       }
 
-    }  catch (err) {
-  setStatusMsg('');
-  const msg = err.response?.data;
-  const status = err.response?.status;
+    } catch (err) {
+      setStatusMsg('');
+      const msg = err.response?.data;
+      const status = err.response?.status;
 
-  // ─── REGISTER ERROR HANDLING ───────────────────────
-  if (mode === 'register') {
-    if (status === 409) {
-      // Duplicate face detected
-      toast.error('❌ This face is already registered with another account!');
-    } else if (status === 400) {
-      toast.error('No face detected in image. Please retake.');
-    } else {
-      toast.error(typeof msg === 'string' ? msg : 'Face registration failed. Try again.');
+      // ─── REGISTER ERROR HANDLING ───────────────────────
+      if (mode === 'register') {
+        if (status === 409) {
+          // Duplicate face detected
+          toast.error('❌ This face is already registered with another account!');
+        } else if (status === 400) {
+          toast.error('No face detected in image. Please retake.');
+        } else {
+          toast.error(typeof msg === 'string' ? msg : 'Face registration failed. Try again.');
+        }
+        // Reset for retake — no attempt locking for register
+        setCaptured(null);
+        setDescriptor(null);
+        if (activeTab === 'camera') setTimeout(() => startCamera(), 150);
+        return;
+      }
+
+      // ─── LOGIN ERROR HANDLING ───────────────────────────
+      const confMatch = typeof msg === 'string' && msg.match(/Confidence: ([\d.]+)%/);
+      const failedConf = confMatch ? parseFloat(confMatch[1]) : null;
+      setLastConfidence(failedConf);
+
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
+
+      if (newAttempts >= MAX_ATTEMPTS) {
+        setLocked(true);
+        setLockTimer(30);
+        toast.error('❌ Too many failed attempts. Locked for 30 seconds.');
+      } else {
+        const remaining = MAX_ATTEMPTS - newAttempts;
+        if (typeof msg === 'string') {
+          toast.error(`${msg} (${remaining} attempt${remaining > 1 ? 's' : ''} remaining)`);
+        } else {
+          toast.error(`Face verification failed. ${remaining} attempt${remaining > 1 ? 's' : ''} remaining.`);
+        }
+      }
+
+      setCaptured(null);
+      setDescriptor(null);
+      if (activeTab === 'camera' && !locked) setTimeout(() => startCamera(), 150);
     }
-    // Reset for retake — no attempt locking for register
-    setCaptured(null);
-    setDescriptor(null);
-    if (activeTab === 'camera') setTimeout(() => startCamera(), 150);
-    return;
-  }
-
-  // ─── LOGIN ERROR HANDLING ───────────────────────────
-  const confMatch = typeof msg === 'string' && msg.match(/Confidence: ([\d.]+)%/);
-  const failedConf = confMatch ? parseFloat(confMatch[1]) : null;
-  setLastConfidence(failedConf);
-
-  const newAttempts = attempts + 1;
-  setAttempts(newAttempts);
-
-  if (newAttempts >= MAX_ATTEMPTS) {
-    setLocked(true);
-    setLockTimer(30);
-    toast.error('❌ Too many failed attempts. Locked for 30 seconds.');
-  } else {
-    const remaining = MAX_ATTEMPTS - newAttempts;
-    if (typeof msg === 'string') {
-      toast.error(`${msg} (${remaining} attempt${remaining > 1 ? 's' : ''} remaining)`);
-    } else {
-      toast.error(`Face verification failed. ${remaining} attempt${remaining > 1 ? 's' : ''} remaining.`);
-    }
-  }
-
-  setCaptured(null);
-  setDescriptor(null);
-  if (activeTab === 'camera' && !locked) setTimeout(() => startCamera(), 150);
-}
   };
 
 
