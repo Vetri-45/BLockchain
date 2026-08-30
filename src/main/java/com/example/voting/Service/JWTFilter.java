@@ -73,10 +73,7 @@ public class JWTFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
            
-            System.out.println("Header: " +authorizationHeader);
-             System.out.println("Username: " +username);
-             System.out.println("Auth before: " +SecurityContextHolder.getContext().getAuthentication());
-                System.out.println("Auth after: " +SecurityContextHolder.getContext().getAuthentication());
+
         }
 
         filterChain.doFilter(request, response);
