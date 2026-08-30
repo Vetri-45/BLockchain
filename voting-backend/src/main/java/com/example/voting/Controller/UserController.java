@@ -29,8 +29,11 @@ public class UserController {
 
     @PostMapping("/user")
     public ResponseEntity<?> createUser(@RequestBody User user) {
-        return ResponseEntity.status(403)
-                .body("Direct registration not allowed. Use OTP verification.");
+        try {
+            return ResponseEntity.ok(userService.createUser(user));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/user")

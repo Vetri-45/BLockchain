@@ -32,8 +32,8 @@ public class ElectionController {
     }
     @GetMapping("/elections/{id}")
     public Election getElectionbyid(@PathVariable Long id){
-       return electionService.getElectionById(id);
-       
+        return electionService.getElectionById(id);
+
     }
     @DeleteMapping("/elections/{id}")
     public String deleteElection (@PathVariable Long id){
@@ -57,7 +57,7 @@ public class ElectionController {
     @PutMapping("elections/{id}")
     public Election updateElectionById(@PathVariable Long id, @RequestBody Election election) {
         return electionService.updateByID(id, election);
-         
+
     }
     @PutMapping("/end/{id}")
     public String endElection(@PathVariable Long id) {
@@ -83,5 +83,3 @@ public class ElectionController {
     }
 
 }
-
-
