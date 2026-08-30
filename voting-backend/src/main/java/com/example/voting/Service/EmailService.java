@@ -1,31 +1,30 @@
 package com.example.voting.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import jakarta.mail.internet.MimeMessage;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    @Value("${brevo.api.key}")
+    private String brevoApiKey;
 
-    @Value("${spring.mail.username}")
+    @Value("${brevo.sender.email}")
     private String fromEmail;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public void sendOtp(String toEmail, String otp) {
         try {
             System.out.println("Sending OTP email to: " + toEmail);
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-            helper.setFrom(fromEmail);
-            helper.setTo(toEmail);
-            helper.setSubject("VoteChain — Your OTP Code");
 
             String htmlContent = """
                 <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto;
@@ -48,15 +47,27 @@ public class EmailService {
                 </div>
             """.formatted(otp);
 
-            helper.setText(htmlContent, true);
-            mailSender.send(message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("api-key", brevoApiKey);
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-        } catch(Exception e) {
-            e.printStackTrace();
+            Map<String, Object> body = new HashMap<>();
+            body.put("sender", Map.of("email", fromEmail, "name", "VoteChain"));
+            body.put("to", List.of(Map.of("email", toEmail)));
+            body.put("subject", "VoteChain — Your OTP Code");
+            body.put("htmlContent", htmlContent);
 
-            throw new RuntimeException(
-                    "Failed to send OTP email: " + e.getMessage()
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+
+            restTemplate.postForEntity(
+                    "https://api.brevo.com/v3/smtp/email",
+                    request,
+                    String.class
             );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to send OTP email: " + e.getMessage());
         }
     }
 }
